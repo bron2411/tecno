@@ -1,0 +1,8 @@
+{
+  "name": "TecnoInnova ERP",
+  "description": "Sistema automatizado para gestión de pedidos, asignación de técnicos, inventario, facturación y postventa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
