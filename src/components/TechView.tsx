@@ -9,7 +9,7 @@ interface Props {
 }
 
 export function TechView({ orders, technicians, onComplete }: Props) {
-  const scheduledOrders = orders.filter(o => o.status === 'SCHEDULED').sort((a, b) => {
+  const scheduledOrders = orders.filter(o => o.status === 'PROGRAMADO').sort((a, b) => {
     return (new Date(a.scheduledDate || '').getTime()) - (new Date(b.scheduledDate || '').getTime());
   });
 
@@ -60,6 +60,16 @@ export function TechView({ orders, technicians, onComplete }: Props) {
                     <div>
                       <span className="font-bold text-slate-800">{order.serviceType}</span>
                       <p className="text-[11px] text-slate-500 mt-0.5">{order.details}</p>
+                      {order.requestedProducts && order.requestedProducts.length > 0 && (
+                        <div className="mt-2 text-[11px]">
+                          <span className="font-bold text-slate-700">Equipos:</span>
+                          <ul className="list-disc list-inside mt-0.5 text-slate-500">
+                            {order.requestedProducts.map(p => (
+                              <li key={p.productId}>{p.quantity}x {p.name}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

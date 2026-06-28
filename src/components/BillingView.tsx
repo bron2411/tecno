@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function BillingView({ orders, onInvoice }: Props) {
-  const completedOrders = orders.filter(o => o.status === 'COMPLETED');
+  const completedOrders = orders.filter(o => o.status === 'COMPLETADO');
 
   return (
     <div className="max-w-5xl mx-auto py-8">
@@ -43,6 +43,16 @@ export function BillingView({ orders, onInvoice }: Props) {
                     <span>•</span>
                     <span className="font-bold text-slate-700">{order.serviceType}</span>
                   </div>
+                  {order.requestedProducts && order.requestedProducts.length > 0 && (
+                    <div className="mt-2 text-xs text-slate-600">
+                      <span className="font-semibold text-slate-700">Productos Requeridos:</span>
+                      <ul className="list-disc list-inside mt-0.5">
+                        {order.requestedProducts.map(p => (
+                          <li key={p.productId}>{p.quantity}x {p.name}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
               

@@ -1,11 +1,11 @@
 export type OrderStatus =
-  | 'PENDING'
-  | 'APPROVED'
-  | 'REJECTED'
-  | 'SCHEDULED'
-  | 'COMPLETED'
-  | 'INVOICED'
-  | 'FOLLOW_UP_DONE';
+  | 'PENDIENTE'
+  | 'APROBADO'
+  | 'RECHAZADO'
+  | 'PROGRAMADO'
+  | 'COMPLETADO'
+  | 'FACTURADO'
+  | 'POSTVENTA_COMPLETADA';
 
 export interface Order {
   id: string;
@@ -14,13 +14,14 @@ export interface Order {
   address: string;
   serviceType: string;
   details: string;
+  requestedProducts?: { productId: string, quantity: number, name: string }[];
   status: OrderStatus;
   dateRequested: string;
   technicallyFeasible?: boolean;
   financiallyCleared?: boolean;
   technicianId?: string;
   scheduledDate?: string;
-  satisfactionLevel?: 'Good' | 'Average' | 'Poor';
+  satisfactionLevel?: 'Bueno' | 'Regular' | 'Malo';
   postSaleNotes?: string;
 }
 
@@ -34,7 +35,7 @@ export interface Product {
 export interface Technician {
   id: string;
   name: string;
-  status: 'Available' | 'Busy';
+  status: 'Disponible' | 'Ocupado';
 }
 
 export type ViewState =

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Order } from '../types';
-import { ShieldCheck, Plus } from 'lucide-react';
+import { Order, Product } from '../types';
+import { ShieldCheck, Plus, Trash2 } from 'lucide-react';
 
 interface Props {
   onCreateOrder: (order: Omit<Order, 'id' | 'status' | 'dateRequested'>) => void;
+  products: Product[];
 }
 
-export function ClientPortal({ onCreateOrder }: Props) {
+export function ClientPortal({ onCreateOrder, products }: Props) {
   const [formData, setFormData] = useState({
     clientName: '',
     phone: '',
@@ -14,11 +15,37 @@ export function ClientPortal({ onCreateOrder }: Props) {
     serviceType: 'Cámaras de videovigilancia',
     details: ''
   });
+  
+  const [selectedProducts, setSelectedProducts] = useState<{productId: string, quantity: number, name: string}[]>([]);
+  const [currentProduct, setCurrentProduct] = useState('');
+  const [currentQuantity, setCurrentQuantity] = useState(1);
   const [submitted, setSubmitted] = useState(false);
+
+  const handleAddProduct = () => {
+    if (!currentProduct) return;
+    const prod = products.find(p => p.id === currentProduct);
+    if (!prod) return;
+    
+    setSelectedProducts(prev => {
+      const existing = prev.find(p => p.productId === currentProduct);
+      if (existing) {
+        return prev.map(p => p.productId === currentProduct ? { ...p, quantity: p.quantity + currentQuantity } : p);
+      }
+      return [...prev, { productId: prod.id, quantity: currentQuantity, name: prod.name }];
+    });
+    
+    setCurrentProduct('');
+    setCurrentQuantity(1);
+  };
+
+  const handleRemoveProduct = (productId: string) => {
+    setSelectedProducts(prev => prev.filter(p => p.productId !== productId));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onCreateOrder(formData);
+    
+    onCreateOrder({ ...formData, requestedProducts: selectedProducts.length > 0 ? selectedProducts : undefined });
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
@@ -29,6 +56,7 @@ export function ClientPortal({ onCreateOrder }: Props) {
         serviceType: 'Cámaras de videovigilancia',
         details: ''
       });
+      setSelectedProducts([]);
     }, 3000);
   };
 
@@ -104,6 +132,58 @@ export function ClientPortal({ onCreateOrder }: Props) {
                   <option>Control de Acceso</option>
                   <option>Mantenimiento de Equipos</option>
                 </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-slate-700">Equipos Requeridos (Opcional)</label>
+                <div className="flex gap-2 items-start">
+                  <select
+                    className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition-all bg-white"
+                    value={currentProduct}
+                    onChange={(e) => setCurrentProduct(e.target.value)}
+                  >
+                    <option value="">Seleccionar producto...</option>
+                    {products.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                  <input
+                    type="number"
+                    min="1"
+                    className="w-20 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition-all"
+                    value={currentQuantity}
+                    onChange={(e) => setCurrentQuantity(parseInt(e.target.value) || 1)}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddProduct}
+                    disabled={!currentProduct}
+                    className="px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200 transition-colors disabled:opacity-50"
+                  >
+                    Agregar
+                  </button>
+                </div>
+                
+                {selectedProducts.length > 0 && (
+                  <div className="mt-3 p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Productos Seleccionados</h4>
+                    {selectedProducts.map(p => (
+                      <div key={p.productId} className="flex items-center justify-between bg-white px-3 py-2 border border-slate-100 rounded shadow-sm text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-blue-600">{p.quantity}x</span>
+                          <span className="text-slate-700">{p.name}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveProduct(p.productId)}
+                          className="text-slate-400 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-1.5">

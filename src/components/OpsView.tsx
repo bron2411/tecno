@@ -9,7 +9,7 @@ interface Props {
 }
 
 export function OpsView({ orders, technicians, onSchedule }: Props) {
-  const approvedOrders = orders.filter(o => o.status === 'APPROVED');
+  const approvedOrders = orders.filter(o => o.status === 'APROBADO');
   const [assignments, setAssignments] = useState<Record<string, { techId: string; date: string }>>({});
 
   const handleAssignmentChange = (orderId: string, field: 'techId' | 'date', value: string) => {
@@ -65,6 +65,16 @@ export function OpsView({ orders, technicians, onSchedule }: Props) {
                     <span className="font-medium text-slate-700">Servicio:</span> {order.serviceType}
                     <br />
                     <span className="font-medium text-slate-700">Detalles:</span> {order.details}
+                    {order.requestedProducts && order.requestedProducts.length > 0 && (
+                      <div className="mt-2">
+                        <span className="font-medium text-slate-700">Productos Requeridos:</span>
+                        <ul className="list-disc list-inside mt-1">
+                          {order.requestedProducts.map(p => (
+                            <li key={p.productId} className="text-sm">{p.quantity}x {p.name}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 </div>
 

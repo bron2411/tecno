@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function SalesView({ orders, onUpdateOrder }: Props) {
-  const pendingOrders = orders.filter(o => o.status === 'PENDING');
+  const pendingOrders = orders.filter(o => o.status === 'PENDIENTE');
 
   return (
     <div className="max-w-5xl mx-auto py-8">
@@ -53,6 +53,16 @@ export function SalesView({ orders, onUpdateOrder }: Props) {
                     </p>
                     <p className="pl-6"><span className="font-medium text-slate-700">Servicio solicitado:</span> {order.serviceType}</p>
                     <p className="pl-6"><span className="font-medium text-slate-700">Detalles:</span> {order.details}</p>
+                    {order.requestedProducts && order.requestedProducts.length > 0 && (
+                      <div className="pl-6 mt-2">
+                        <span className="font-medium text-slate-700">Productos Requeridos:</span>
+                        <ul className="list-disc list-inside mt-1">
+                          {order.requestedProducts.map(p => (
+                            <li key={p.productId} className="text-sm">{p.quantity}x {p.name}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                     <p className="pl-6"><span className="font-medium text-slate-700">Teléfono:</span> {order.phone}</p>
                   </div>
                 </div>
@@ -86,14 +96,14 @@ export function SalesView({ orders, onUpdateOrder }: Props) {
               <div className="bg-slate-50 md:w-64 p-6 border-t md:border-t-0 md:border-l border-slate-100 flex flex-col justify-center gap-3">
                 <button
                   disabled={!order.technicallyFeasible || !order.financiallyCleared}
-                  onClick={() => onUpdateOrder(order.id, { status: 'APPROVED' })}
+                  onClick={() => onUpdateOrder(order.id, { status: 'APROBADO' })}
                   className="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed text-white text-[11px] font-bold uppercase tracking-wider rounded transition-colors flex items-center justify-center gap-2"
                 >
                   <Check size={14} />
                   Aprobar Pedido
                 </button>
                 <button
-                  onClick={() => onUpdateOrder(order.id, { status: 'REJECTED' })}
+                  onClick={() => onUpdateOrder(order.id, { status: 'RECHAZADO' })}
                   className="w-full py-2 px-3 bg-white hover:bg-red-50 text-red-600 border border-red-200 text-[11px] font-bold uppercase tracking-wider rounded transition-colors flex items-center justify-center gap-2 mt-2"
                 >
                   <X size={14} />

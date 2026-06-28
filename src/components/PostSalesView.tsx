@@ -4,22 +4,22 @@ import { PhoneCall, Star, Send } from 'lucide-react';
 
 interface Props {
   orders: Order[];
-  onFeedback: (orderId: string, level: 'Good' | 'Average' | 'Poor', notes: string) => void;
+  onFeedback: (orderId: string, level: 'Bueno' | 'Regular' | 'Malo', notes: string) => void;
 }
 
 export function PostSalesView({ orders, onFeedback }: Props) {
   // Show orders that have been invoiced and need follow up
-  const followUpOrders = orders.filter(o => o.status === 'INVOICED');
+  const followUpOrders = orders.filter(o => o.status === 'FACTURADO');
   
   const [activeForm, setActiveForm] = useState<string | null>(null);
-  const [level, setLevel] = useState<'Good' | 'Average' | 'Poor'>('Good');
+  const [level, setLevel] = useState<'Bueno' | 'Regular' | 'Malo'>('Bueno');
   const [notes, setNotes] = useState('');
 
   const handleSubmit = (orderId: string) => {
     onFeedback(orderId, level, notes);
     setActiveForm(null);
     setNotes('');
-    setLevel('Good');
+    setLevel('Bueno');
   };
 
   return (
@@ -58,6 +58,16 @@ export function PostSalesView({ orders, onFeedback }: Props) {
                 <div className="bg-slate-50 rounded p-3 text-xs border border-slate-100">
                   <span className="font-bold text-slate-700">Servicio:</span> {order.serviceType} <br/>
                   <span className="text-slate-500">{order.details}</span>
+                  {order.requestedProducts && order.requestedProducts.length > 0 && (
+                    <div className="mt-2 text-slate-600">
+                      <span className="font-bold text-slate-700">Productos:</span>
+                      <ul className="list-disc list-inside mt-0.5">
+                        {order.requestedProducts.map(p => (
+                          <li key={p.productId}>{p.quantity}x {p.name}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -71,9 +81,9 @@ export function PostSalesView({ orders, onFeedback }: Props) {
                         value={level}
                         onChange={(e) => setLevel(e.target.value as any)}
                       >
-                        <option value="Good">🟢 Excelente / Bueno</option>
-                        <option value="Average">🟡 Regular / Con observaciones</option>
-                        <option value="Poor">🔴 Malo / Reclamo</option>
+                        <option value="Bueno">🟢 Excelente / Bueno</option>
+                        <option value="Regular">🟡 Regular / Con observaciones</option>
+                        <option value="Malo">🔴 Malo / Reclamo</option>
                       </select>
                     </div>
                     
