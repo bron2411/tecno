@@ -21,6 +21,14 @@ export function Login({ onLoginSuccess }: Props) {
     setMessage(null);
 
     try {
+      if (!supabase) {
+        if (email === 'admin@admin.com' || email === 'demo@demo.com') {
+          onLoginSuccess();
+        } else {
+          setError('Sistema en modo local sin base de datos conectada. Para entrar de prueba usa: admin@admin.com');
+        }
+        return;
+      }
       if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;

@@ -292,22 +292,6 @@ export default function App() {
     }
   };
 
-  if (!supabaseUrl) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
-        <div className="bg-white p-8 rounded-lg shadow-sm border border-slate-200 max-w-lg text-center">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">Configuración Pendiente</h2>
-          <p className="text-slate-600 mb-6">
-            Para completar tu asignación, debes crear tu proyecto en Supabase y agregar las variables de entorno <code>VITE_SUPABASE_URL</code> y <code>VITE_SUPABASE_ANON_KEY</code> a Vercel.
-          </p>
-          <p className="text-sm text-slate-500">
-            También recuerda ejecutar el script SQL <code>supabase_schema.sql</code> en el editor SQL de Supabase para crear las tablas y datos de prueba.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center">Cargando...</div>;
   }
